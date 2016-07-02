@@ -1,7 +1,12 @@
 package game.block;
 
+import java.awt.Dimension;
+import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.image.BufferedImage;
 
+import game.interfaces.Renderable;
+import game.world.GameWorld;
 import game.world.Region;
 import maths.Point2f;
 import maths.Rectangle;
@@ -15,8 +20,14 @@ import maths.Rectangle;
  * @author ExarnCun
  *
  */
-public abstract class Block extends Rectangle {
+public abstract class Block extends Rectangle implements Renderable {
 
+	/**
+	 * Texture of the Block
+	 */
+	public BufferedImage Texture;
+	
+	
 	/**
 	 * Location of the Block<br>
 	 * THIS LOCATION IS NOT THE LOCATION IN PIXELS, THE PIXEL LOCATION IS CALCULATED LIKE THIS:
@@ -42,6 +53,22 @@ public abstract class Block extends Rectangle {
 	 */
 	public Point LocationOnScreen(Region r){
 		return new Point((int)(Location.X * r.BlockSize),(int)(Location.Y * r.BlockSize));
+	}
+	
+	/**
+	 * 
+	 * Calculates the Size on screen
+	 * 
+	 * @param r the Region this Block belongs to
+	 * @return the Size on screen
+	 */
+	public Dimension SizeOnScreen(Region r){
+		return new Dimension((int)(Size.X * r.BlockSize),(int)(Size.Y * r.BlockSize));
+	}
+	
+	@Override
+	public void Render(Graphics2D g, GameWorld world, Object[] args){
+		g.drawImage(Texture, LocationOnScreen(world.region).x, LocationOnScreen(world.region).y, SizeOnScreen(world.region).width, SizeOnScreen(world.region).height, null);
 	}
 	
 	//TODO: add stuff
