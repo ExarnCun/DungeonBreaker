@@ -8,6 +8,8 @@ import java.awt.image.BufferedImage;
 import java.io.ObjectInputStream;
 import javax.swing.JFrame;
 
+import game.Checked;
+
 /**
  * 
  * 'Super-container' of Everything the game provides (Items, Entities, Listeners, ...)
@@ -17,11 +19,25 @@ import javax.swing.JFrame;
  */
 public abstract class World extends JFrame {
 	
-
+	/**
+	 * 
+	 * <b>Constructor</b>
+	 * 
+	 * @param ResolutionX Horizontal resolution of the game
+	 * @param ResolutionY Vertical resolution of the game
+	 */
+	@Checked(true)
+	public World(int ResolutionX, int ResolutionY){
+		Xresolution = ResolutionX;
+		Yresolution = ResolutionY;
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		Init();
+	}
 
 	/**
 	 * Used for Object {@link ObjectInputStream} etc.
 	 */
+	@Checked(true)
 	private static final long serialVersionUID = 7060784873153920329L;
 
 
@@ -30,6 +46,7 @@ public abstract class World extends JFrame {
 	 * 
 	 * @see Ticker
 	 */
+	@Checked(true)
 	public Ticker TickThread;
 	
 	
@@ -38,6 +55,7 @@ public abstract class World extends JFrame {
 	 * 
 	 * @see #Tick()
 	 */
+	@Checked(true)
 	public double TPS = 60;
 	
 	
@@ -46,6 +64,7 @@ public abstract class World extends JFrame {
 	 * 
 	 * @see Ticker
 	 */
+	@Checked(true)
 	public Renderer RenderThread;
 	
 	
@@ -54,37 +73,44 @@ public abstract class World extends JFrame {
 	 * 
 	 * @see #paint(Graphics)
 	 */
+	@Checked(true)
 	public double RPS = 64;
 	
 	/**
 	 * Background image of the game
 	 */
+	@Checked(true)
 	public BufferedImage GBackground;
 	
 	/**
 	 * next image to draw on JFrame
 	 */
+	@Checked(true)
 	public BufferedImage NextFrame;
 	
 	/**
 	 * Graphics of the game
 	 */
+	@Checked(true)
 	public Graphics2D GGraphics;
 	
 	/**
 	 * Horizontal and vertical resolution of the game
 	 */
+	@Checked(true)
 	public int Xresolution, Yresolution;
 	
 	
 	/**
 	 * Initializes the world
 	 */
+	@Checked(true)
 	public void Init(){
 		TickThread = new Ticker(TPS, this);
 		RenderThread = new Renderer(RPS, this);
 		
-		//TODO: init 'GBackground' and 'NextFrame'
+		GBackground = new BufferedImage(Xresolution, Yresolution, BufferedImage.TYPE_3BYTE_BGR);
+		NextFrame = new BufferedImage(Xresolution, Yresolution, BufferedImage.TYPE_4BYTE_ABGR);
 		
 		GGraphics = NextFrame.createGraphics();
 		
@@ -93,8 +119,25 @@ public abstract class World extends JFrame {
 		postInit();
 	}
 	
+	/**
+	 * Starts rendering and ticking
+	 */
+	@Checked(true)
+	public void start(){
+		RenderThread.start();
+		TickThread.start();
+	}
+	
+	/**
+	 * Stops rendering and ticking
+	 */
+	public void stop(){
+		RenderThread.stop();
+		TickThread.stop();
+	}
 	
 	
+	@Checked(true)
 	@Override
 	public void paint(Graphics g){
 		
@@ -118,6 +161,7 @@ public abstract class World extends JFrame {
 	 * <b>Tick-Method.</b><br>
 	 * Invoked {@link #TPS} times per second
 	 */
+	@Checked(true)
 	public abstract void Tick();
 	
 	/**
@@ -125,6 +169,7 @@ public abstract class World extends JFrame {
 	 * 
 	 * @param g the Graphics of the game
 	 */
+	@Checked(true)
 	public abstract void render(Graphics2D g);
 	
 }
@@ -132,28 +177,34 @@ public abstract class World extends JFrame {
 /**
  * A separated Thread for calling the Tick-method of the World
  */
+@Checked(true)
 class Ticker implements Runnable{
 	
 	/**
 	 * Ticks per second
 	 */
+	@Checked(true)
 	double TPS;
 	
 	/**
 	 * as long as this boolean is 'true' the Tick-Thread is running
 	 */
+	@Checked(true)
 	boolean active;
 	
 	/**
 	 * Instance which's Tick-method should be called
 	 */
+	@Checked(true)
 	World Target;
 	
 	/**
 	 * Starts the Tick-Thread
 	 */
+	@Checked(true)
 	public void start(){
 		if(!active){
+			active = true;
 			new Thread(this).start();
 		}
 	}
@@ -173,6 +224,7 @@ class Ticker implements Runnable{
 	 * @param TPS Ticks per second ( how often the Tick-method of the World should be called per second)
 	 * @param Target World, which's Tick-method should be called
 	 */
+	@Checked(true)
 	public Ticker(double TPS, World Target){
 		this.TPS = TPS;
 		this.Target = Target;
@@ -185,6 +237,7 @@ class Ticker implements Runnable{
 	 * 
 	 * @author ExarnCun
 	 */
+	@Checked(true)
 	@Override
 	public void run() {
 		Date a = Calendar.getInstance().getTime();
@@ -218,28 +271,34 @@ class Ticker implements Runnable{
 /**
  * A separated Thread for calling the Render-method of the World
  */
+@Checked(true)
 class Renderer implements Runnable{
 	
 	/**
 	 * Renderings per second
 	 */
+	@Checked(true)
 	double RPS;
 	
 	/**
 	 * as long as this boolean is 'true' the Render-Thread is running
 	 */
+	@Checked(true)
 	boolean active;
 	
 	/**
 	 * Instance which's Render-method should be called
 	 */
+	@Checked(true)
 	World Target;
 	
 	/**
 	 * Starts the Render-Thread
 	 */
+	@Checked(true)
 	public void start(){
 		if(!active){
+			active = true;
 			new Thread(this).start();
 		}
 	}
@@ -259,6 +318,7 @@ class Renderer implements Runnable{
 	 * @param RPS Renderings per second ( how often the Render-method of the World should be called per second)
 	 * @param Target World, which's Render-method should be called
 	 */
+	@Checked(true)
 	public Renderer(double RPS, World Target){
 		this.RPS = RPS;
 		this.Target = Target;
@@ -271,6 +331,7 @@ class Renderer implements Runnable{
 	 * 
 	 * @author ExarnCun
 	 */
+	@Checked(true)
 	@Override
 	public void run() {
 		Date a = Calendar.getInstance().getTime();
@@ -294,7 +355,11 @@ class Renderer implements Runnable{
 				//TODO: Add information about skipped Ticks
 			}
 			while(Timeout <= 0){
-				Target.paint(Target.getGraphics());
+				try {
+					Target.paint(Target.getGraphics());
+				} catch (Exception e) {
+					// TODO: handle exception
+				}
 				Timeout += TargetTimeout;
 			}
 			b = Calendar.getInstance().getTime();

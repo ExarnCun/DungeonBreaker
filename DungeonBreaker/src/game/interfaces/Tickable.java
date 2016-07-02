@@ -1,5 +1,6 @@
 package game.interfaces;
 
+import game.Checked;
 import game.world.GameWorld;
 
 /**
@@ -14,6 +15,7 @@ public interface Tickable {
 	 * @param world The world that invokes the method
 	 * @param params additional Parameters; can be 'null'
 	 */
+	@Checked(true)
 	public void Tick(GameWorld world, Object[] params);
 	
 }

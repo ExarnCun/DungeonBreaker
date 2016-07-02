@@ -1,4 +1,4 @@
-package game.block;
+package game.entity;
 
 import java.awt.Dimension;
 import java.awt.Graphics2D;
@@ -6,8 +6,7 @@ import java.awt.Point;
 import java.awt.image.BufferedImage;
 
 import game.Checked;
-import game.Item.Item;
-import game.entity.Entity;
+import game.interfaces.Collisionable;
 import game.interfaces.Renderable;
 import game.world.GameWorld;
 import game.world.Region;
@@ -17,28 +16,33 @@ import maths.Rectangle;
 
 /**
  * 
- * A block is a object, that can be rendered by a {@link GameWorld} and has some specific events.<br>
- * Every "dead" visible object, that is not an overlay should be a Block.<br>
- * You can also implement some methods in addition to extending the Block so you get even more features!
- * 
- * @author ExarnCun
+ * A entity is like a block, but it is not fixed to a specific index.<br>
+ * 'every "living thing" in the game should be an entity (like monsters, players, etc.)'
  *
  */
-public abstract class Block implements Renderable {
+public abstract class Entity implements Renderable, Collisionable {
 
 	/**
-	 * Texture of the Block
+	 * 
+	 * <b>Constructor</b>
+	 * 
+	 * @param location Location of the entity
+	 * @param size Size of the entity
+	 */
+	public Entity(Point2f location, Dimension2f size){
+		Location = location;
+		Size = size;
+	}
+	
+	/**
+	 * Texture of the Entity
 	 */
 	@Checked(true)
 	public BufferedImage Texture;
 	
-	/**
-	 * Whether entities collide (can't go through) this block or not
-	 */
-	public boolean hasCollision = true;
 	
 	/**
-	 * Location of the Block<br>
+	 * Location of the Entity<br>
 	 * THIS LOCATION IS NOT THE LOCATION IN PIXELS, THE PIXEL LOCATION IS CALCULATED LIKE THIS:
 	 * {@code PixelLocation = new Point((int)(Location.X * BlockSize),(int)(Location.Y * BlockSize))}
 	 */
@@ -47,18 +51,19 @@ public abstract class Block implements Renderable {
 	
 	
 	/**
-	 * Size of the Block<br>
+	 * Size of the Entity<br>
 	 * THIS DIMENSION IS NOT THE DIMENSION IN PIXELS, THE PIXEL DIMENSION IS CALCULATED LIKE THIS:
 	 * {@code PixelDimension = new Dimension((int)(Size.Width * BlockSize),(int)(Size.Height * BlockSize))}
 	 */
-	public Dimension2f Size = new Dimension2f(1, 1);
+	@Checked(true)
+	public Dimension2f Size;
 	
 	
 	/**
 	 * 
 	 * Calculates the location on screen
 	 * 
-	 * @param r the Region this Block belongs to
+	 * @param r the Region this Entity belongs to
 	 * @return the Location on screen
 	 */
 	@Checked(true)
@@ -70,7 +75,7 @@ public abstract class Block implements Renderable {
 	 * 
 	 * Calculates the Size on screen
 	 * 
-	 * @param r the Region this Block belongs to
+	 * @param r the Region this Entity belongs to
 	 * @return the Size on screen
 	 */
 	@Checked(true)
@@ -78,42 +83,41 @@ public abstract class Block implements Renderable {
 		return new Dimension((int)(Size.Width * r.BlockSize),(int)(Size.Height * r.BlockSize));
 	}
 	
-	@Checked(true)
-	@Override
+	/**
+	 * Renders the entity onto the next frame
+	 */
+	@Override 
 	public void Render(Graphics2D g, GameWorld world, Object[] args){
 		g.drawImage(Texture, LocationOnScreen(world.region).x, LocationOnScreen(world.region).y, SizeOnScreen(world.region).width, SizeOnScreen(world.region).height, null);
 	}
 	
 	/**
-	 * @return the bounds of this block
+	 * returns the bounds of this entity
 	 */
-	public Rectangle getBounds() {
+	@Override
+	public Rectangle getCollisionBounds(){
 		return new Rectangle(Location, Size);
 	}
 	
-	//TODO: add stuff
-	
-	//Abstract methods
-	
 	/**
 	 * 
-	 * Invoked, when a Entity collides with this block, or enters it.
+	 * moves an entity
 	 * 
-	 * @param world The world this block belongs to
-	 * @param collider The object which entered ( / collided with) this block
+	 * @param x how far the entity should move horizontally
+	 * @param y how far the entity should move vertically
+	 * @param world The world the entity belongs to
+	 * @param args additional parameters; can be 'null'
+	 * @return whether the entity moved or not
 	 */
-	public abstract void OnEnter(GameWorld world, Object collider);
-	
-	/**
-	 * 
-	 * Invoked, when a item is used on this block
-	 * 
-	 * @param world The world this block belongs to
-	 * @param entity The entity which holds the item
-	 * @param item The item used on this block
-	 */
-	public abstract void OnItemUse(GameWorld world, Entity entity, Item item);
-
+	public boolean move(float x, float y, GameWorld world, Object[] args){
+		
+		if(world.collision(new Rectangle(new Point2f(Location.X + x, Location.Y + y), Size)) <= 1){
+			Location = new Point2f(Location.X + x, Location.Y + y);
+			return true;
+		}
+		
+		return false;
+	}
 	
 	
 }
