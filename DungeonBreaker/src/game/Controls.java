@@ -66,7 +66,7 @@ public class Controls {
 	/**
 	 * Key to move down
 	 */
-	public static int KEY_DOWN = NativeKeyEvent.VC_W;
+	public static int KEY_DOWN = NativeKeyEvent.VC_S;
 	
 	/**
 	 * Key to move right

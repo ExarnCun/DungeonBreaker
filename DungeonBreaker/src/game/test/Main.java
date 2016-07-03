@@ -17,7 +17,8 @@ public class Main extends GameWorld{
 		Main m = new Main(1920, 1080);
 		m.region = RegionLoader.CreateRegion(40, 40, 1920 / 40);
 		m.region.Blocks[1][1] = new TestBlock(1, 1);
-		m.toAdd.add(new TestEntity(new Point2f(2, 20), new Dimension2f(2,2)));
+		//m.toAdd.add(new TestEntity(new Point2f(2, 4), new Dimension2f(2,2)));
+		m.toAdd.add(new TestPlayer(new Point2f(2, 4), new Dimension2f(0.75f, 0.75f)));
 		m.setVisible(true);
 		m.start();
 	}

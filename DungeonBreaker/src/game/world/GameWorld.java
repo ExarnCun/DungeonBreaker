@@ -232,7 +232,7 @@ public class GameWorld extends World implements NativeKeyListener{
 				}
 			}
 		} catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
 		}
 		
 		for(Block[] b : region.Blocks){

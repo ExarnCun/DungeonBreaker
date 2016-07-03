@@ -2,13 +2,12 @@ package game.test;
 
 import game.Item.Item;
 import game.entity.Entity;
-import game.interfaces.Tickable;
 import game.world.GameWorld;
 import image.ImageLoader;
 import maths.Dimension2f;
 import maths.Point2f;
 
-public class TestEntity extends Entity implements Tickable{
+public class TestEntity extends Entity{
 
 	public TestEntity(Point2f location, Dimension2f size) {
 		super(location, size);
