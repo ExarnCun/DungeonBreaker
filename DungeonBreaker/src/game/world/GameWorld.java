@@ -2,6 +2,7 @@ package game.world;
 
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -15,11 +16,14 @@ import org.jnativehook.keyboard.NativeKeyEvent;
 import org.jnativehook.keyboard.NativeKeyListener;
 
 import game.Checked;
+import game.Controls;
 import game.block.Block;
 import game.interfaces.Collisionable;
 import game.interfaces.Renderable;
 import game.interfaces.Tickable;
 import maths.Rectangle;
+import world.Renderer;
+import world.Ticker;
 import world.World;
 
 public class GameWorld extends World implements NativeKeyListener{
@@ -32,9 +36,11 @@ public class GameWorld extends World implements NativeKeyListener{
 	 * @param ResolutionY Vertical resolution of the game
 	 */
 	@Checked(true)
-	public GameWorld(int ResolutionX, int ResolutionY)  {
-		super(ResolutionX, ResolutionY);
-		
+	public GameWorld()  {
+		super(Controls.XRESOLUTION, Controls.YRESOLUTION);
+		setSize(Controls.WIDTH, Controls.HEIGHT);
+		setUndecorated(Controls.FULLSCREEN);
+		setState(Controls.WINDOWSTATE);
 	}
 		
 
@@ -170,7 +176,9 @@ public class GameWorld extends World implements NativeKeyListener{
 			if(o instanceof Tickable){
 				((Tickable) o).Tick(this, null);
 			}
+			
 		}
+		
 		
 		for(Block[] b : region.Blocks){
 			for(Block bl : b){
@@ -194,6 +202,26 @@ public class GameWorld extends World implements NativeKeyListener{
 		
 	}
 
+	@Override
+	public void Init(){
+		
+		TPS = Controls.UPS;
+		RPS = Controls.RPS;
+		
+		TickThread = new Ticker(TPS, this);
+		RenderThread = new Renderer(RPS, this);
+		
+		GBackground = new BufferedImage(Xresolution, Yresolution, BufferedImage.TYPE_3BYTE_BGR);
+		NextFrame = new BufferedImage(Xresolution, Yresolution, BufferedImage.TYPE_4BYTE_ABGR);
+		
+		GGraphics = NextFrame.createGraphics();
+		
+		//TODO: add stuff
+		
+		postInit();
+	}
+	
+	
 	@Override
 	public void render(Graphics2D g) {
 		

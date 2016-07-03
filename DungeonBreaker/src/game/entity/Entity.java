@@ -4,12 +4,14 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
 
 import game.Checked;
 import game.Item.Item;
-import game.block.Block;
 import game.interfaces.Collisionable;
 import game.interfaces.Renderable;
+import game.interfaces.Tickable;
 import game.world.GameWorld;
 import game.world.Region;
 import maths.Dimension2f;
@@ -22,8 +24,15 @@ import maths.Rectangle;
  * 'every "living thing" in the game should be an entity (like monsters, players, etc.)'
  *
  */
-public abstract class Entity implements Renderable, Collisionable {
+public abstract class Entity implements Renderable, Collisionable, Tickable {
 
+	
+	/**
+	 * Items the entity has
+	 */
+	public List<Item> Items = new ArrayList<Item>();
+	
+	
 	/**
 	 * 
 	 * <b>Constructor</b>
@@ -90,7 +99,15 @@ public abstract class Entity implements Renderable, Collisionable {
 		return new Dimension((int)(Size.Width * r.BlockSize),(int)(Size.Height * r.BlockSize));
 	}
 	
-	
+	/**
+	 * 
+	 * Invoked when entity gets hit by an item
+	 * 
+	 * @param world The world this entity belongs to
+	 * @param sender The object using the item
+	 * @param item The item used
+	 * @param damage ammount of damage caused to this entity
+	 */
 	public void HitByItem(GameWorld world, Object sender, Item item, double damage){
 		HP -= damage;
 		
@@ -98,6 +115,14 @@ public abstract class Entity implements Renderable, Collisionable {
 		
 		//TODO: add kill condition etc.
 		
+	}
+	
+	
+	@Override
+	public void Tick(GameWorld world, Object[] args){
+		for(Item i : Items){
+			i.Tick(world, args);
+		}
 	}
 	
 	/**

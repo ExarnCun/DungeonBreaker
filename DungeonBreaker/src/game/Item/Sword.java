@@ -23,7 +23,7 @@ public abstract class Sword extends Item implements Renderable{
 	public void StartUseing(GameWorld world, Object user, Object[] args){
 		Rectangle hitbounds = getHitBounds(world, user, args);
 		for(Object o : world.getObjects(hitbounds)){
-			if(o instanceof Entity){
+			if(o instanceof Entity && !o.equals(user)){
 				((Entity) o).HitByItem(world, user, this, damage);
 			}
 		}
