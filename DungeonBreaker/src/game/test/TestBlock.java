@@ -23,7 +23,7 @@ public class TestBlock extends Block implements Tickable{
 	}
 
 	@Override
-	public void OnItemUse(GameWorld world, Entity entity, Item item) {
+	public void OnItemUse(GameWorld world, Object entity, Item item) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -31,6 +31,12 @@ public class TestBlock extends Block implements Tickable{
 	@Checked(true)
 	@Override
 	public void Tick(GameWorld world, Object[] params) {
+		
+	}
+
+	@Override
+	public void OnBreak(GameWorld world, Object entity, Item item) {
+		// TODO Auto-generated method stub
 		
 	}	
 

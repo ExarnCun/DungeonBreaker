@@ -27,6 +27,11 @@ import maths.Rectangle;
 public abstract class Block implements Renderable {
 
 	/**
+	 * how strong an item must be to break this block
+	 */
+	public int breakLevel = 1;
+	
+	/**
 	 * Texture of the Block
 	 */
 	@Checked(true)
@@ -109,11 +114,19 @@ public abstract class Block implements Renderable {
 	 * Invoked, when a item is used on this block
 	 * 
 	 * @param world The world this block belongs to
-	 * @param entity The entity which holds the item
+	 * @param entity The object which holds the item
 	 * @param item The item used on this block
 	 */
-	public abstract void OnItemUse(GameWorld world, Entity entity, Item item);
+	public abstract void OnItemUse(GameWorld world, Object entity, Item item);
 
-	
+	/**
+	 * 
+	 * Invoked, when this block breaks
+	 *  
+	 * @param world The world this block belongs to
+	 * @param entity The object which holds the item
+	 * @param item The item used to break this block
+	 */
+	public abstract void OnBreak(GameWorld world, Object entity, Item item);
 	
 }

@@ -6,6 +6,8 @@ import java.awt.Point;
 import java.awt.image.BufferedImage;
 
 import game.Checked;
+import game.Item.Item;
+import game.block.Block;
 import game.interfaces.Collisionable;
 import game.interfaces.Renderable;
 import game.world.GameWorld;
@@ -33,6 +35,11 @@ public abstract class Entity implements Renderable, Collisionable {
 		Location = location;
 		Size = size;
 	}
+	
+	/**
+	 * how many health-points the entity has
+	 */
+	public double HP;
 	
 	/**
 	 * Texture of the Entity
@@ -83,6 +90,16 @@ public abstract class Entity implements Renderable, Collisionable {
 		return new Dimension((int)(Size.Width * r.BlockSize),(int)(Size.Height * r.BlockSize));
 	}
 	
+	
+	public void HitByItem(GameWorld world, Object sender, Item item, double damage){
+		HP -= damage;
+		
+		onHit(world, sender, item, damage);
+		
+		//TODO: add kill condition etc.
+		
+	}
+	
 	/**
 	 * Renders the entity onto the next frame
 	 */
@@ -119,5 +136,9 @@ public abstract class Entity implements Renderable, Collisionable {
 		return false;
 	}
 	
+	/**
+	 * Invoked when entity is hit by an item
+	 */
+	public abstract void onHit(GameWorld world, Object sender, Item item, double damage);
 	
 }

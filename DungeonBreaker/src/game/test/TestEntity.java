@@ -1,5 +1,6 @@
 package game.test;
 
+import game.Item.Item;
 import game.entity.Entity;
 import game.interfaces.Tickable;
 import game.world.GameWorld;
@@ -22,6 +23,12 @@ public class TestEntity extends Entity implements Tickable{
 	@Override
 	public void Tick(GameWorld world, Object[] params) {
 		this.move(0.01f, -0.01f, world, null);
+	}
+
+	@Override
+	public void onHit(GameWorld world, Object sender, Item item, double damage) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

@@ -1,6 +1,7 @@
 package game.world;
 
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -33,17 +34,7 @@ public class GameWorld extends World implements NativeKeyListener{
 	@Checked(true)
 	public GameWorld(int ResolutionX, int ResolutionY)  {
 		super(ResolutionX, ResolutionY);
-		GlobalScreen.setEventDispatcher(new DefaultDispatchService());
-		LogManager.getLogManager().reset();
-		Logger logger = Logger.getLogger(GlobalScreen.class.getPackage().getName());
-		logger.setLevel(Level.OFF);
-		try {
-			GlobalScreen.registerNativeHook();
-			
-		} catch (NativeHookException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
 	}
 		
 
@@ -77,6 +68,7 @@ public class GameWorld extends World implements NativeKeyListener{
 	
 	/**
 	 * 
+	 * 
 	 * @param bounds the rectangle
 	 * @return the number of objects / blocks with collision within the rectangle
 	 */
@@ -101,9 +93,59 @@ public class GameWorld extends World implements NativeKeyListener{
 		return ret;
 	}
 	
+	
+	/**
+	 * 
+	 * @param bounds the rectangle
+	 * @return objects within the rectangle
+	 */
+	public List<Object> getObjects(Rectangle bounds){
+		List<Object> ret = new ArrayList<Object>();
+		for(Object o : Objects){
+			if(o instanceof Collisionable){
+				if(((Collisionable) o).getCollisionBounds().intersects(bounds)){
+					ret.add(o);
+				}
+			}
+		}
+		return ret;
+	}
+	
+	
+	/**
+	 * 
+	 * @param bounds the rectangle
+	 * @return indices of blocks within the rectangle
+	 */
+	public List<Point> getBlocks(Rectangle bounds){
+		List<Point> ret = new ArrayList<Point>();
+		
+		for(int x = 0; x < region.Width; x ++){
+			for(int y = 0; y < region.Height; y++){
+				if(region.Blocks[x][y] != null){
+					if(region.Blocks[x][y].getBounds().intersects(bounds)){
+						ret.add(new Point(x, y));
+					}
+				}
+			}
+		}
+		
+		return ret;
+	}
+	
 	@Override
 	public void postInit() {
-		
+		GlobalScreen.setEventDispatcher(new DefaultDispatchService());
+		LogManager.getLogManager().reset();
+		Logger logger = Logger.getLogger(GlobalScreen.class.getPackage().getName());
+		logger.setLevel(Level.OFF);
+		try {
+			GlobalScreen.registerNativeHook();
+			
+		} catch (NativeHookException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	@Override
