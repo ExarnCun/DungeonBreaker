@@ -9,12 +9,19 @@ import game.Checked;
  */
 public class Point2f {
 
+	@Override
+	public String toString() {
+		return "Point2f [X=" + X + ", Y=" + Y + "]";
+	}
+
 	/**
 	 * 
 	 * <b>Constructor</b>
 	 *
-	 * @param x X-Coordinate of the Point
-	 * @param y Y-Coordinate of the Point
+	 * @param x
+	 *            X-Coordinate of the Point
+	 * @param y
+	 *            Y-Coordinate of the Point
 	 */
 	@Checked(true)
 	public Point2f(float x, float y) {
@@ -27,5 +34,5 @@ public class Point2f {
 	 */
 	@Checked(true)
 	public float X, Y;
-	
+
 }

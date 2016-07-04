@@ -9,59 +9,60 @@ import game.Checked;
  * A separated Thread for calling the Tick-method of the World
  */
 @Checked(true)
-public class Ticker implements Runnable{
-	
+public class Ticker implements Runnable {
+
 	/**
 	 * Ticks per second
 	 */
 	@Checked(true)
 	double TPS;
-	
+
 	/**
 	 * as long as this boolean is 'true' the Tick-Thread is running
 	 */
 	@Checked(true)
 	boolean active;
-	
+
 	/**
 	 * Instance which's Tick-method should be called
 	 */
 	@Checked(true)
 	World Target;
-	
+
 	/**
 	 * Starts the Tick-Thread
 	 */
 	@Checked(true)
-	public void start(){
-		if(!active){
+	public void start() {
+		if (!active) {
 			active = true;
 			new Thread(this).start();
 		}
 	}
-	
+
 	/**
 	 * Stops the Tick-Thread
 	 */
-	public void stop(){
+	public void stop() {
 		active = false;
 	}
-	
-	
+
 	/**
 	 * 
 	 * <b>Constructor</b>
 	 * 
-	 * @param TPS Ticks per second ( how often the Tick-method of the World should be called per second)
-	 * @param Target World, which's Tick-method should be called
+	 * @param TPS
+	 *            Ticks per second ( how often the Tick-method of the World
+	 *            should be called per second)
+	 * @param Target
+	 *            World, which's Tick-method should be called
 	 */
 	@Checked(true)
-	public Ticker(double TPS, World Target){
+	public Ticker(double TPS, World Target) {
 		this.TPS = TPS;
 		this.Target = Target;
 	}
 
-	
 	/**
 	 * 
 	 * <b>Basic GameLoop (TickLoop)</b>
@@ -75,19 +76,19 @@ public class Ticker implements Runnable{
 		Date b = Calendar.getInstance().getTime();
 		double TargetTimeout = 1000 / TPS;
 		double Timeout = 0;
-		while(active){
+		while (active) {
 			Target.Tick();
-			if(Timeout > 0){
-				try{
-					Thread.sleep((long)Timeout);
-				} catch(InterruptedException e){
-					
+			if (Timeout > 0) {
+				try {
+					Thread.sleep((long) Timeout);
+				} catch (InterruptedException e) {
+
 				}
 			}
-			if(Timeout <= 0){
-				//TODO: Add information about skipped Ticks
+			if (Timeout <= 0) {
+				// TODO: Add information about skipped Ticks
 			}
-			while(Timeout <= 0){
+			while (Timeout <= 0) {
 				Target.Tick();
 				Timeout += TargetTimeout;
 			}
@@ -96,5 +97,5 @@ public class Ticker implements Runnable{
 			a = Calendar.getInstance().getTime();
 		}
 	}
-	
+
 }

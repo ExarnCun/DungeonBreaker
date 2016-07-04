@@ -17,7 +17,9 @@ import org.jnativehook.keyboard.NativeKeyListener;
 
 import game.Checked;
 import game.Controls;
+import game.Item.Item;
 import game.block.Block;
+import game.entity.Entity;
 import game.interfaces.Collisionable;
 import game.interfaces.Renderable;
 import game.interfaces.Tickable;
@@ -26,119 +28,122 @@ import world.Renderer;
 import world.Ticker;
 import world.World;
 
-public class GameWorld extends World implements NativeKeyListener{
+public class GameWorld extends World implements NativeKeyListener {
 
 	/**
 	 * 
 	 * <b>Constructor</b>
 	 * 
-	 * @param ResolutionX Horizontal resolution of the game
-	 * @param ResolutionY Vertical resolution of the game
+	 * @param ResolutionX
+	 *            Horizontal resolution of the game
+	 * @param ResolutionY
+	 *            Vertical resolution of the game
 	 */
 	@Checked(true)
-	public GameWorld()  {
+	public GameWorld() {
 		super(Controls.XRESOLUTION, Controls.YRESOLUTION);
 		setSize(Controls.WIDTH, Controls.HEIGHT);
 		setUndecorated(Controls.FULLSCREEN);
 		setState(Controls.WINDOWSTATE);
 	}
-		
 
 	private static final long serialVersionUID = 955592560605788155L;
-	
+
 	/**
 	 * Pressed keys
 	 */
 	public boolean[] PressedKeys = new boolean[300];
-	
+
 	/**
 	 * The current Region of the world
 	 */
 	@Checked(true)
 	public Region region;
-	
+
 	/**
 	 * Objects added to the world (like Entities etc. BUT NO BLOCKS!)
 	 */
 	public List<Object> Objects = new ArrayList<Object>();
-	
+
 	/**
 	 * Objects that will be removed next Tick
 	 */
 	public List<Object> toRemove = new ArrayList<Object>();
-	
+
 	/**
 	 * Objects that will be added next Tick
 	 */
 	public List<Object> toAdd = new ArrayList<Object>();
-	
+
 	/**
 	 * 
 	 * 
-	 * @param bounds the rectangle
-	 * @return the number of objects / blocks with collision within the rectangle
+	 * @param bounds
+	 *            the rectangle
+	 * @return the number of objects / blocks with collision within the
+	 *         rectangle
 	 */
-	public int collision(Rectangle bounds){
+	public int collision(Rectangle bounds) {
 		int ret = 0;
-		for(Block[] b : region.Blocks){
-			for(Block bl : b){
-				if(bl != null){
-					if(bl.hasCollision && bl.getBounds().intersects(bounds)){
+		for (Block[] b : region.Blocks) {
+			for (Block bl : b) {
+				if (bl != null) {
+					if (bl.hasCollision && bl.getBounds().intersects(bounds)) {
 						ret += 1;
 					}
 				}
 			}
 		}
-		for(Object o : Objects){
-			if(o instanceof Collisionable){
-				if(((Collisionable) o).getCollisionBounds().intersects(bounds)){
+		for (Object o : Objects) {
+			if (o instanceof Collisionable) {
+				if (((Collisionable) o).getCollisionBounds().intersects(bounds)) {
 					ret += 1;
 				}
 			}
 		}
 		return ret;
 	}
-	
-	
+
 	/**
 	 * 
-	 * @param bounds the rectangle
+	 * @param bounds
+	 *            the rectangle
 	 * @return objects within the rectangle
 	 */
-	public List<Object> getObjects(Rectangle bounds){
+	public List<Object> getObjects(Rectangle bounds) {
 		List<Object> ret = new ArrayList<Object>();
-		for(Object o : Objects){
-			if(o instanceof Collisionable){
-				if(((Collisionable) o).getCollisionBounds().intersects(bounds)){
+		for (Object o : Objects) {
+			if (o instanceof Collisionable) {
+				if (((Collisionable) o).getCollisionBounds().intersects(bounds)) {
 					ret.add(o);
 				}
 			}
 		}
 		return ret;
 	}
-	
-	
+
 	/**
 	 * 
-	 * @param bounds the rectangle
+	 * @param bounds
+	 *            the rectangle
 	 * @return indices of blocks within the rectangle
 	 */
-	public List<Point> getBlocks(Rectangle bounds){
+	public List<Point> getBlocks(Rectangle bounds) {
 		List<Point> ret = new ArrayList<Point>();
-		
-		for(int x = 0; x < region.Width; x ++){
-			for(int y = 0; y < region.Height; y++){
-				if(region.Blocks[x][y] != null){
-					if(region.Blocks[x][y].getBounds().intersects(bounds)){
+
+		for (int x = 0; x < region.Width; x++) {
+			for (int y = 0; y < region.Height; y++) {
+				if (region.Blocks[x][y] != null) {
+					if (region.Blocks[x][y].getBounds().intersects(bounds)) {
 						ret.add(new Point(x, y));
 					}
 				}
 			}
 		}
-		
+
 		return ret;
 	}
-	
+
 	@Override
 	public void postInit() {
 		GlobalScreen.setEventDispatcher(new DefaultDispatchService());
@@ -147,46 +152,46 @@ public class GameWorld extends World implements NativeKeyListener{
 		logger.setLevel(Level.OFF);
 		try {
 			GlobalScreen.registerNativeHook();
-			
+
 		} catch (NativeHookException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Override
-	public void start(){
+	public void start() {
 		super.start();
 		GlobalScreen.addNativeKeyListener(this);
 	}
 
 	@Override
 	public void Tick() {
-		
-		for(Object o : toAdd){
+
+		for (Object o : toAdd) {
 			Objects.add(o);
 		}
-		for(Object o : toRemove){
+		for (Object o : toRemove) {
 			Objects.remove(o);
 		}
 		toAdd.clear();
 		toRemove.clear();
-		
-		for(Object o : Objects){
-			if(o instanceof Tickable){
+
+		for (Object o : Objects) {
+			if (o instanceof Tickable) {
 				((Tickable) o).Tick(this, null);
+				
 			}
-			
+
 		}
-		
-		
-		for(Block[] b : region.Blocks){
-			for(Block bl : b){
-				if(bl != null){
-					if(bl.hasCollision){
-						for(Object o : Objects){
-							if(o instanceof Collisionable){
-								if(((Collisionable) o).getCollisionBounds().intersects(bl.getBounds())){
+
+		for (Block[] b : region.Blocks) {
+			for (Block bl : b) {
+				if (bl != null) {
+					if (bl.hasCollision) {
+						for (Object o : Objects) {
+							if (o instanceof Collisionable) {
+								if (((Collisionable) o).getCollisionBounds().intersects(bl.getBounds())) {
 									((Collisionable) o).onCollide(this, bl, null);
 									bl.OnEnter(this, o);
 								}
@@ -194,51 +199,57 @@ public class GameWorld extends World implements NativeKeyListener{
 						}
 					}
 				}
-				if(bl instanceof Tickable){
+				if (bl instanceof Tickable) {
 					((Tickable) bl).Tick(this, null);
 				}
 			}
 		}
-		
+
 	}
 
 	@Override
-	public void Init(){
-		
+	public void Init() {
+
 		TPS = Controls.UPS;
 		RPS = Controls.RPS;
-		
+
 		TickThread = new Ticker(TPS, this);
 		RenderThread = new Renderer(RPS, this);
-		
+
 		GBackground = new BufferedImage(Xresolution, Yresolution, BufferedImage.TYPE_3BYTE_BGR);
 		NextFrame = new BufferedImage(Xresolution, Yresolution, BufferedImage.TYPE_4BYTE_ABGR);
-		
+
 		GGraphics = NextFrame.createGraphics();
-		
-		//TODO: add stuff
-		
+
+		// TODO: add stuff
+
 		postInit();
 	}
-	
-	
+
 	@Override
 	public void render(Graphics2D g) {
-		
+
 		try {
-			for(Object o : Objects){
-				if(o instanceof Renderable){
+			for (Object o : Objects) {
+				if (o instanceof Renderable) {
 					((Renderable) o).Render(GGraphics, this, null);
+					if(o instanceof Entity){
+						for(Item i : ((Entity) o).Items){
+							if(i instanceof Renderable){
+								((Renderable) i).Render(GGraphics, this, null);
+							}
+						}
+					}
 				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-		for(Block[] b : region.Blocks){
-			for(Block bl : b){
-				if(bl != null){
-					if(bl instanceof Renderable){
+
+		for (Block[] b : region.Blocks) {
+			for (Block bl : b) {
+				if (bl != null) {
+					if (bl instanceof Renderable) {
 						((Renderable) bl).Render(GGraphics, this, null);
 					}
 				}
@@ -248,17 +259,26 @@ public class GameWorld extends World implements NativeKeyListener{
 
 	@Override
 	public void nativeKeyPressed(NativeKeyEvent e) {
-		PressedKeys[e.getKeyCode()] = true;
+		try{
+			
+			PressedKeys[e.getKeyCode()] = true;
+		} catch(ArrayIndexOutOfBoundsException ex){
+			
+		}
 	}
 
 	@Override
 	public void nativeKeyReleased(NativeKeyEvent e) {
-		PressedKeys[e.getKeyCode()] = false;
+		try{
+			PressedKeys[e.getKeyCode()] = false;
+		} catch(ArrayIndexOutOfBoundsException ex){
+			
+		}
 	}
 
 	@Override
 	public void nativeKeyTyped(NativeKeyEvent e) {
-		
+
 	}
 
 }

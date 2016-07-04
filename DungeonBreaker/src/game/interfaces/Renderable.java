@@ -13,11 +13,14 @@ public interface Renderable {
 	/**
 	 * The Render-method
 	 * 
-	 * @param g The Graphics of the next frame
-	 * @param world The World that invoked this method
-	 * @param params Additional parameters; can be 'null'
+	 * @param g
+	 *            The Graphics of the next frame
+	 * @param world
+	 *            The World that invoked this method
+	 * @param params
+	 *            Additional parameters; can be 'null'
 	 */
 	@Checked(true)
 	public void Render(Graphics2D g, GameWorld world, Object[] params);
-	
+
 }

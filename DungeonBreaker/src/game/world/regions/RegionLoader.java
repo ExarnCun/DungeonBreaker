@@ -17,9 +17,12 @@ public class RegionLoader {
 	 * 
 	 * Creates a region
 	 * 
-	 * @param Width The width of the region ( = how many blocks horizontally)
-	 * @param Height The height of the region ( = how many blocks vertically)
-	 * @param BlockSize The Size of one block ( in pixels)
+	 * @param Width
+	 *            The width of the region ( = how many blocks horizontally)
+	 * @param Height
+	 *            The height of the region ( = how many blocks vertically)
+	 * @param BlockSize
+	 *            The Size of one block ( in pixels)
 	 * @return The region
 	 */
 	@Checked(true)

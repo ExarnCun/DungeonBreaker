@@ -7,7 +7,7 @@ import image.ImageLoader;
 import maths.Dimension2f;
 import maths.Point2f;
 
-public class TestEntity extends Entity{
+public class TestEntity extends Entity {
 
 	public TestEntity(Point2f location, Dimension2f size) {
 		super(location, size);
@@ -16,7 +16,7 @@ public class TestEntity extends Entity{
 
 	@Override
 	public void onCollide(GameWorld world, Object collider, Object[] args) {
-		
+
 	}
 
 	@Override
@@ -27,7 +27,7 @@ public class TestEntity extends Entity{
 	@Override
 	public void onHit(GameWorld world, Object sender, Item item, double damage) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }
