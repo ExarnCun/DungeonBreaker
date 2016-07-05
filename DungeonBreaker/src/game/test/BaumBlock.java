@@ -3,10 +3,14 @@ package game.test;
 import game.Item.Item;
 import game.block.Block;
 import game.world.GameWorld;
+import image.ImageLoader;
 
 public class BaumBlock extends Block {
 
 	public BaumBlock(){
+		
+		this.hasCollision = false;
+		this.Texture = ImageLoader.LoadImage("1");
 		
 	}
 	
