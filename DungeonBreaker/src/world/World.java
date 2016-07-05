@@ -146,7 +146,6 @@ public abstract class World extends JFrame {
 																		// Frame
 																		// on
 																		// JFrame
-
 	}
 
 	// ABSTRACT METHODS
